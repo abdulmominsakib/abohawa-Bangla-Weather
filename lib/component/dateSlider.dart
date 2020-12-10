@@ -15,7 +15,8 @@ class TodayWeatherButton extends StatelessWidget {
       duration: Duration(milliseconds: 500),
       curve: Curves.easeOutQuint,
       margin: EdgeInsets.only(
-        top: active ? 0 : 10,
+        top: active ? 0 : 30,
+        bottom: active ? 15 : 0,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

@@ -141,114 +141,142 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // <---
                   // UI Starts Here
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            '$userLocation',
-                            style: kHeaderTitle,
-                          ),
-                          Text(
-                            '${userOnTodayPage()}$banglaWeatherDescription',
-                            style: kBanglaFont,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10, bottom: 10),
-                            child: Image.asset(
-                              'assets/weather-icons/$icon.png',
-                              color: icon == 'clear' ? null : Colors.white,
-                              width: 300,
-                              height: 200,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-
-                          // Temperature Data
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
+                  return Container(
+                    margin: EdgeInsets.only(top: height / 35),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    '${userOnTodayPage()}তাপমাত্রাঃ',
-                                    style: kBanglaFont,
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Colors.white,
+                                    size: height / 25,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
                                   ),
                                   Text(
-                                    '$banglaTemperature°',
-                                    // '25',
+                                    '$userLocation',
                                     style: kHeaderTitle.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 70),
+                                        fontSize: height / 22),
                                   ),
-                                ],
-                              ),
-                              // This will act as a divider
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10, left: 5),
-                                    color: Colors.white24,
-                                    width: 2,
-                                    height: 180,
-                                  )
-                                ],
-                              ),
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${userOnTodayPage()}বাতাসের গতিঃ',
-                                      style: kBanglaFont.copyWith(fontSize: 15),
-                                    ),
-                                    Text(
-                                      '$banglaWindSpeed কি.মি./ঘণ্টা',
-                                      style: kBanglaFont.copyWith(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'রাত্রে তাপমাত্রা থাকবেঃ',
-                                      style: kBanglaFont.copyWith(fontSize: 15),
-                                    ),
-                                    Text(
-                                      '$banglaNightTemp°',
-                                      style: kBanglaFont.copyWith(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                  ]),
-                            ],
-                          ),
+                                ]),
 
-                          // Date Slider
-                          // You can modify it at COMPONENT FOLDER
-                          SingleChildScrollView(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 20),
-                              height: 80,
-                              child: PageView.builder(
-                                onPageChanged: (value) {
-                                  setState(() {
-                                    getCurrentPage();
-                                  });
-                                },
-                                scrollDirection: Axis.horizontal,
-                                controller: ctrl,
-                                itemCount: dateGenerator.length,
-                                itemBuilder: (context, int index) {
-                                  return TodayWeatherButton(
-                                    today: isItToday(),
-                                    date: dateGenerator[index],
-                                    active: currentPage == index ? true : false,
-                                  );
-                                },
+                            SizedBox(height: 10),
+                            Text(
+                              '${userOnTodayPage()}$banglaWeatherDescription',
+                              style: kBanglaFont,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 10, bottom: 10),
+                              child: Image.asset(
+                                'assets/weather-icons/$icon.png',
+                                color: icon == 'clear' ? null : Colors.white,
+                                width: 300,
+                                height: height / 4,
+                                fit: BoxFit.contain,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+
+                            // Temperature Data
+                            Container(
+                              margin: EdgeInsets.only(top: height / 30),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        '${userOnTodayPage()}তাপমাত্রাঃ',
+                                        style: kBanglaFont,
+                                      ),
+                                      Text(
+                                        '$banglaTemperature°',
+                                        // '25',
+                                        style: kHeaderTitle.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: height / 13),
+                                      ),
+                                    ],
+                                  ),
+                                  // This will act as a divider
+                                  Column(
+                                    children: [
+                                      Container(
+                                        margin:
+                                            EdgeInsets.only(right: 10, left: 5),
+                                        color: Colors.white24,
+                                        width: 2,
+                                        height: height / 5,
+                                      )
+                                    ],
+                                  ),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${userOnTodayPage()}বাতাসের গতিঃ',
+                                          style: kBanglaFont.copyWith(
+                                              fontSize: height / 50),
+                                        ),
+                                        Text(
+                                          '$banglaWindSpeed কি.মি./ঘণ্টা',
+                                          style: kBanglaFont.copyWith(
+                                              fontSize: height / 40,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'রাত্রে তাপমাত্রা থাকবেঃ',
+                                          style: kBanglaFont.copyWith(
+                                              fontSize: height / 60),
+                                        ),
+                                        Text(
+                                          '$banglaNightTemp°',
+                                          style: kBanglaFont.copyWith(
+                                              fontSize: height / 40,
+                                              color: Colors.white),
+                                        ),
+                                      ]),
+                                ],
+                              ),
+                            ),
+
+                            // Date Slider
+                            // You can modify it at COMPONENT FOLDER
+                            SingleChildScrollView(
+                              child: Container(
+                                margin: EdgeInsets.only(top: height / 30),
+                                height: height / 10,
+                                child: PageView.builder(
+                                  onPageChanged: (value) {
+                                    setState(() {
+                                      getCurrentPage();
+                                    });
+                                  },
+                                  scrollDirection: Axis.horizontal,
+                                  controller: ctrl,
+                                  itemCount: dateGenerator.length,
+                                  itemBuilder: (context, int index) {
+                                    return TodayWeatherButton(
+                                      today: isItToday(),
+                                      date: dateGenerator[index],
+                                      active:
+                                          currentPage == index ? true : false,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 }
                 // If Future don't have any Data

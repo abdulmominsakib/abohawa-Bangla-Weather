@@ -72,10 +72,17 @@ class WeatherCondition extends ChangeNotifier {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(lat2, lon2, localeIdentifier: 'bn_BN');
 
+      // print(placemarks);
+
       String englishLocation = placemarks[0].name;
 
       // < On Ios or any other location if the locality doesn't
       // exist then a name will replace it >
+
+      // String fullBanglaLocation =
+      //     placemarks[0].locality + ',' + placemarks[0].country;
+
+      // print(fullBanglaLocation);
 
       String banglaLocation = placemarks[0].locality == ''
           ? englishLocation

@@ -1,7 +1,7 @@
 name: abohawa
 description: A bengali weather app
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -12,34 +12,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-  provider: ^4.3.2+2
+  get: ^3.23.1
   http: ^0.12.2
   bangla_utilities: ^0.2.1
   location: ^3.1.0
   geocoding: ^1.0.5
   data_connection_checker: ^0.3.4
   intl: ^0.16.1
-  
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
-
   uses-material-design: true
 
-  
   assets:
     - assets/weather-icons/
   fonts:
     - family: Solaiman
       fonts:
         - asset: fonts/SolaimanLipi.ttf
-

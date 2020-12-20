@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class GetWeatherData {
   // <--- Add Your Api Key Here --->
-  static String apiKey = 'd9523d86264f6cff64ceee8636a81058';
+  static String apiKey = '';
 
   // You can get history data with this method
   // // Divided by Thousand so it can be compatiable with the API

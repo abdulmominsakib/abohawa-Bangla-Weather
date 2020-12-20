@@ -3,7 +3,7 @@ import 'package:abohawa/shared/banglaDateGenerator.dart';
 import 'package:abohawa/shared/styling.dart';
 import 'package:abohawa/shared/weatherCondition.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'component/dateSlider.dart';
 
@@ -12,13 +12,14 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   // initial Page 1 is for displaying Today's Date
   // Viewportfraction is for 3
   final PageController ctrl =
       PageController(viewportFraction: 1 / 2.9, initialPage: 1);
-  final String url =
-      'https://icons-for-free.com/iconfiles/png/512/cloud+day+forecast+lightning+shine+storm+sun+weather+icon-1320183295537909806.png';
+
+  final PageController tempCont = PageController(initialPage: 1);
 
   // This should be change with the Page View Builder initial builder
   int currentPage = 1;
@@ -39,6 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return '';
   }
 
+  maybeFunction() {
+    // Ultimately God Decides What Will be the weather, That's why I am adding this
+    if (currentPage == 1) {
+      return 'রয়েছে';
+    } else if (currentPage == 0) {
+      return 'ছিল';
+    } else
+      return '- সম্ভবনা রয়েছে';
+  }
+
   // If user on current page show "আজ"
   isItToday() {
     if (currentPage == 1) {
@@ -49,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // For Future Builder to know when this is finished
   getWeatherData() {
-    return Provider.of<WeatherCondition>(context).makeWeatherList();
+    return weatherCondition.makeWeatherList();
   }
 
   // For Checking Connection
@@ -57,56 +68,77 @@ class _HomeScreenState extends State<HomeScreen> {
     internetAvailable = await DataConnectionChecker().hasConnection;
   }
 
-  Future<List> weatherFuture;
-
   bool internetAvailable = true;
+
+  final Date dateController = Get.find();
+
+  final WeatherCondition weatherCondition = Get.put(WeatherCondition());
 
   @override
   void initState() {
     super.initState();
     // For adding the week at start of the app
-    Provider.of<Date>(context, listen: false).addBanglaWeek();
-    weatherFuture =
-        Provider.of<WeatherCondition>(context, listen: false).makeWeatherList();
-    Provider.of<WeatherCondition>(context, listen: false)
-        .makeWeatherListZilla();
+    dateController.addBanglaWeek();
+    weatherCondition.makeWeatherList();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-
     isDataAvailable();
+    print('build done');
     // List of Date
-    List<Date> dateGenerator = Provider.of<Date>(context).dateGenerator;
-
+    List<Date> dateGenerator = dateController.dateGenerator;
     return SafeArea(
       child: Container(
         margin: EdgeInsets.only(top: height / 20, bottom: height / 20),
         height: MediaQuery.of(context).size.height,
         child: RefreshIndicator(
           onRefresh: () {
-            setState(() {
-              Provider.of<Date>(context, listen: false).addBanglaWeek();
-              weatherFuture =
-                  Provider.of<WeatherCondition>(context, listen: false)
-                      .makeWeatherList();
-              Provider.of<WeatherCondition>(context, listen: false)
-                  .makeWeatherListZilla();
-            });
+            setState(() {});
             return isDataAvailable();
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
-            child: FutureBuilder(
-              future: weatherFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
+            child: GetX<WeatherCondition>(
+              builder: (controller) {
+                if (controller.isLoading.value == true) {
+                  return Container(
+                    height: height / 2,
+                    padding: EdgeInsets.all(30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: internetAvailable
+                              ? CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                )
+                              : SizedBox(),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          internetAvailable
+                              ? 'একটু অপেক্ষা করুন'
+                              : 'ইন্টারনেট কানেকশন নেই!',
+                          style: kHeaderTitle.copyWith(
+                            fontSize: 30,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (controller.isLoading.value == false) {
                   // List of Weather, This is synchronus because the future builder already
                   // knows when to call this list
                   List<WeatherCondition> weatherList =
-                      Provider.of<WeatherCondition>(context).weatherList;
+                      controller.weatherListUpdater.value;
 
                   // User Location
                   String userLocation = weatherList[currentPage].location;
@@ -116,12 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       weatherList[currentPage].descriptionWeather;
 
                   String banglaWeatherDescription =
-                      Provider.of<WeatherCondition>(context)
-                          .getBanglaWeatherDesc(weatherDescription);
+                      controller.getBanglaWeatherDesc(weatherDescription);
 
                   // Icon To Show
-                  String icon = Provider.of<WeatherCondition>(context)
-                      .whichIconToShow(weatherDescription);
+                  String icon = controller.whichIconToShow(weatherDescription);
 
                   // Temperature
                   int temperature = weatherList[currentPage].temperature;
@@ -142,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // <---
                   // UI Starts Here
                   return Container(
-                    margin: EdgeInsets.only(top: height / 35),
+                    margin: EdgeInsets.only(top: height / 50),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -168,11 +198,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             SizedBox(height: 10),
                             Text(
-                              '${userOnTodayPage()}$banglaWeatherDescription',
+                              '${userOnTodayPage()}$banglaWeatherDescription ${maybeFunction()}',
                               style: kBanglaFont,
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 10, bottom: 10),
+                              height: height / 4,
+                              margin: EdgeInsets.symmetric(vertical: 10),
                               child: Image.asset(
                                 'assets/weather-icons/$icon.png',
                                 color: icon == 'clear' ? null : Colors.white,
@@ -184,66 +215,82 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Temperature Data
                             Container(
-                              margin: EdgeInsets.only(top: height / 30),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        '${userOnTodayPage()}তাপমাত্রাঃ',
-                                        style: kBanglaFont,
-                                      ),
-                                      Text(
-                                        '$banglaTemperature°',
-                                        // '25',
-                                        style: kHeaderTitle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: height / 13),
-                                      ),
-                                    ],
-                                  ),
-                                  // This will act as a divider
-                                  Column(
-                                    children: [
-                                      Container(
-                                        margin:
-                                            EdgeInsets.only(right: 10, left: 5),
-                                        color: Colors.white24,
-                                        width: 2,
-                                        height: height / 5,
-                                      )
-                                    ],
-                                  ),
-                                  Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                              height: height / 4,
+                              child: PageView.builder(
+                                controller: tempCont,
+                                onPageChanged: (value) {
+                                  ctrl.animateToPage(value,
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.easeOutCubic);
+                                },
+                                itemCount: weatherList.length,
+                                itemBuilder: (context, index) {
+                                  return AnimatedContainer(
+                                    duration: Duration(seconds: 2),
+                                    margin: EdgeInsets.only(top: height / 30),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          '${userOnTodayPage()}বাতাসের গতিঃ',
-                                          style: kBanglaFont.copyWith(
-                                              fontSize: height / 50),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              '${userOnTodayPage()}তাপমাত্রাঃ',
+                                              style: kBanglaFont,
+                                            ),
+                                            Text(
+                                              '$banglaTemperature°',
+                                              // '25',
+                                              style: kHeaderTitle.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: height / 13),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          '$banglaWindSpeed কি.মি./ঘণ্টা',
-                                          style: kBanglaFont.copyWith(
-                                              fontSize: height / 40,
-                                              color: Colors.white),
+                                        // This will act as a divider
+                                        Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  right: 10, left: 5),
+                                              color: Colors.white24,
+                                              width: 2,
+                                              height: height / 5,
+                                            )
+                                          ],
                                         ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          'রাত্রে তাপমাত্রা থাকবেঃ',
-                                          style: kBanglaFont.copyWith(
-                                              fontSize: height / 60),
-                                        ),
-                                        Text(
-                                          '$banglaNightTemp°',
-                                          style: kBanglaFont.copyWith(
-                                              fontSize: height / 40,
-                                              color: Colors.white),
-                                        ),
-                                      ]),
-                                ],
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${userOnTodayPage()}বাতাসের গতিঃ',
+                                                style: kBanglaFont.copyWith(
+                                                    fontSize: height / 50),
+                                              ),
+                                              Text(
+                                                '$banglaWindSpeed কি.মি./ঘণ্টা',
+                                                style: kBanglaFont.copyWith(
+                                                    fontSize: height / 40,
+                                                    color: Colors.white),
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                'রাত্রে তাপমাত্রা থাকবেঃ',
+                                                style: kBanglaFont.copyWith(
+                                                    fontSize: height / 60),
+                                              ),
+                                              Text(
+                                                '$banglaNightTemp°',
+                                                style: kBanglaFont.copyWith(
+                                                    fontSize: height / 40,
+                                                    color: Colors.white),
+                                              ),
+                                            ]),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
 
@@ -255,6 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: height / 10,
                                 child: PageView.builder(
                                   onPageChanged: (value) {
+                                    tempCont.animateToPage(value,
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.easeOutCubic);
                                     setState(() {
                                       getCurrentPage();
                                     });
@@ -278,36 +328,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   );
-                }
-                // If Future don't have any Data
-                return Container(
-                  padding: EdgeInsets.all(30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: internetAvailable
-                            ? CircularProgressIndicator(
-                                backgroundColor: Colors.white,
-                              )
-                            : SizedBox(),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        internetAvailable
-                            ? 'একটু অপেক্ষা করুন'
-                            : 'ইন্টারনেট কানেকশন নেই!',
-                        style: kHeaderTitle.copyWith(
-                          fontSize: 30,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
+                } else
+                  return SizedBox();
               },
             ),
           ),
+          // If Future don't have any Data
+          // return
         ),
       ),
     );

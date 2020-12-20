@@ -1,9 +1,10 @@
 import 'package:abohawa/zilla.dart';
 import 'package:abohawa/searchScreen.dart';
 import 'package:abohawa/shared/banglaDateGenerator.dart';
-import 'package:abohawa/shared/weatherCondition.dart';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/instance_manager.dart';
+
 import 'homeScreen.dart';
 
 void main() {
@@ -55,6 +56,8 @@ class _BanglaWeatherState extends State<BanglaWeather> {
     super.initState();
   }
 
+  final Date dateController = Get.put(Date());
+
   @override
   Widget build(BuildContext context) {
     // The Listener Widget is for dismissing the keyboard on any tap
@@ -66,43 +69,39 @@ class _BanglaWeatherState extends State<BanglaWeather> {
           FocusManager.instance.primaryFocus.unfocus();
         }
       },
-      child: ChangeNotifierProvider(
-        create: (_) => Date(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: 'Solaiman'),
-          home: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.transparent,
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_rounded),
-                  label: 'হোম',
-                ),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.search_rounded), label: 'সার্চ'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.location_city_rounded), label: 'জেলা'),
-              ],
-              currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
-            ),
-            body: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFF32C3DB),
-                    Color(0xFF3278E1),
-                  ],
-                ),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(fontFamily: 'Solaiman'),
+        home: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded),
+                label: 'হোম',
               ),
-              // This decides which screen to show based on USER INTERACTIONS
-              child: ChangeNotifierProvider(
-                  create: (_) => WeatherCondition(), child: defaultHomeScreen),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.search_rounded), label: 'সার্চ'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.location_city_rounded), label: 'জেলা'),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Color(0xFF32C3DB),
+                  Color(0xFF3278E1),
+                ],
+              ),
             ),
+            // This decides which screen to show based on USER INTERACTIONS
+            child: defaultHomeScreen,
           ),
         ),
       ),

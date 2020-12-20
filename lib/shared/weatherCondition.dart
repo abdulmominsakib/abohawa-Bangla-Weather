@@ -1,13 +1,12 @@
 import 'dart:async';
-
 import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:abohawa/connection/getWeather.dart';
-import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
 import 'package:location/location.dart' as locate;
 import 'cityObject.dart';
 
-class WeatherCondition extends ChangeNotifier {
+class WeatherCondition extends GetxController {
   WeatherCondition(
       {this.descriptionWeather,
       this.iconWeather,
@@ -30,10 +29,16 @@ class WeatherCondition extends ChangeNotifier {
 
   List<WeatherCondition> weatherList = [];
 
+  var weatherListUpdater = List<WeatherCondition>().obs;
+
+  var isLoading = true.obs;
+
   Future<List<WeatherCondition>> makeWeatherList() async {
     print('function_started');
     print(weatherList.length);
     if (weatherList.isEmpty) {
+      isLoading.value = true;
+
       locate.Location location = locate.Location();
 
       bool _serviceEnabled;
@@ -96,7 +101,8 @@ class WeatherCondition extends ChangeNotifier {
           await GetWeatherData.getWeatherByLatLong(lat, lon, dt);
       double yesterdayWindSpeed =
           await yesterDayWeatherData['current']['wind_speed'] * 3.6.round();
-      int yesterDayTemperature = await yesterDayWeatherData['current']['temp'];
+      int yesterDayTemperature =
+          await yesterDayWeatherData['current']['temp'].toInt();
       String yesterDayweatherDesc =
           await yesterDayWeatherData['current']['weather'][0]['description'];
 
@@ -182,6 +188,9 @@ class WeatherCondition extends ChangeNotifier {
         day7,
       ]);
 
+      weatherListUpdater = weatherList.obs;
+      isLoading.value = false;
+
       // To check if the list is being updated
       // print(weatherList[4].nightTemperature);
       // print(weatherList.length);
@@ -191,8 +200,11 @@ class WeatherCondition extends ChangeNotifier {
 
 // <-- All Zilla Weather List -->
 
-  List<City> allZillaWeather = [];
+  List<City> allZillaWeather = List<City>().obs;
+  var isZillaLoading = true.obs;
+
   Future<List<City>> makeWeatherListZilla() async {
+    isZillaLoading.value = true;
     if (allZillaWeather.isEmpty) {
       getCityWeather(String lat, String lon, String bnCityName) async {
         Map<String, dynamic> zillaWeather =
@@ -281,14 +293,16 @@ class WeatherCondition extends ChangeNotifier {
           // await getCityWeather('24.937533', '89.937775', 'জামালপুর'),
           // await getCityWeather('24.870955', '90.727887', 'নেত্রকোণা'),
         ]);
+        isZillaLoading.value = false;
       }
 
       addAllZillaToList();
+
       return allZillaWeather;
     }
     // used for Debugging purpose
     // print(allZillaWeather.length);
-
+    isZillaLoading.value = false;
     return allZillaWeather;
   }
 

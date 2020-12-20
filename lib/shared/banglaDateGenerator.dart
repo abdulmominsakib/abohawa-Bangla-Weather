@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-class Date extends ChangeNotifier {
+class Date extends GetxController {
   Date({this.fullDate, this.onlyDate});
   final String fullDate;
   final String onlyDate;

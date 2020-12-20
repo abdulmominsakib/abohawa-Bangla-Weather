@@ -1,11 +1,11 @@
-import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:abohawa/connection/getWeather.dart';
 import 'package:abohawa/shared/cityObject.dart';
 import 'package:abohawa/shared/styling.dart';
 import 'package:abohawa/shared/weatherCondition.dart';
+import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -19,6 +19,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<City> futureCity;
   String counterTextUpdator = '';
   Color inputBorder = Colors.white;
+
+  final WeatherCondition weatherCondition = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,10 @@ class _SearchScreenState extends State<SearchScreen> {
         // print(banglaLocation);
 
         String banglaWeatherDescription =
-            Provider.of<WeatherCondition>(context, listen: false)
-                .getBanglaWeatherDesc(weatherDescription);
+            weatherCondition.getBanglaWeatherDesc(weatherDescription);
 
         // Icon To Show
-        String icon = Provider.of<WeatherCondition>(context, listen: false)
-            .whichIconToShow(weatherDescription);
+        String icon = weatherCondition.whichIconToShow(weatherDescription);
 
         String banglaTemperature =
             BanglaUtility.englishToBanglaDigit(englishDigit: temperature);

@@ -1,6 +1,6 @@
-import 'package:abohawa/component/zillaCard.dart';
-import 'package:abohawa/shared/styling.dart';
-import 'package:abohawa/shared/weatherCondition.dart';
+import 'package:abohawa/controller/weatherConditionController.dart';
+import 'package:abohawa/views/ui-components/zillaCard.dart';
+import 'package:abohawa/views/ui-components/styling.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +23,7 @@ class _SavedCityState extends State<SavedCity> {
     weatherCondition.makeWeatherListZilla();
   }
 
-  final WeatherCondition weatherCondition = Get.find();
+  final WeatherConditionController weatherCondition = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _SavedCityState extends State<SavedCity> {
                 color: Colors.white,
               ),
             ),
-            GetX<WeatherCondition>(builder: (controller) {
+            GetX<WeatherConditionController>(builder: (controller) {
               if (controller.isZillaLoading.value == false) {
                 List allZillaWeather = controller.allZillaWeather;
                 return Expanded(

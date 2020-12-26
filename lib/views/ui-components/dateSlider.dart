@@ -1,5 +1,5 @@
-import 'package:abohawa/shared/banglaDateGenerator.dart';
-import 'package:abohawa/shared/styling.dart';
+import 'package:abohawa/modal/Date.dart';
+import 'package:abohawa/views/ui-components/styling.dart';
 import 'package:flutter/material.dart';
 
 class TodayWeatherButton extends StatelessWidget {

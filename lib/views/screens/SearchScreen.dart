@@ -1,7 +1,7 @@
-import 'package:abohawa/connection/getWeather.dart';
-import 'package:abohawa/shared/cityObject.dart';
-import 'package:abohawa/shared/styling.dart';
-import 'package:abohawa/shared/weatherCondition.dart';
+import 'package:abohawa/controller/services/connection/getWeather.dart';
+import 'package:abohawa/controller/weatherConditionController.dart';
+import 'package:abohawa/modal/City.dart';
+import 'package:abohawa/views/ui-components/styling.dart';
 import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -20,7 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String counterTextUpdator = '';
   Color inputBorder = Colors.white;
 
-  final WeatherCondition weatherCondition = Get.find();
+  final WeatherConditionController weatherCondition = Get.find();
 
   @override
   Widget build(BuildContext context) {

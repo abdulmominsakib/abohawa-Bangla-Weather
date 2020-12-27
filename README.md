@@ -4,13 +4,11 @@
 
 ### <img src="docs/flutter-android-ios.png" width="200">  
 
-
-
 <img src='docs/app-demo.gif' width='300'>
 
 ## API KEY এড করতে হবে এখানেঃ
-***/lib/connection/getWeather.dart***
->এই ফাইল এ API Key Variable এ আপনার Open Weather Api key এড করলেই হবে। আপনি চাইলে জেলা এর আবহাওয়া ফেচিং এর জন্য আলাদা API ইউজ করতে পারবেন। আপনার সম্পূর্ণ ব্যাক্তিগত ব্যাপার।
+***lib/controller/services/connection/getWeather.dart***
+>এই ফাইল এ API Key Variable এ আপনার Open Weather Api key এড করলেই হবে। আপনি চাইলে জেলা এর আবহাওয়া ফেচিং এর জন্য আলাদা API ইউজ করতে পারবেন।
 
 ## Features
 
@@ -20,7 +18,7 @@
 - রাত্রের আবহাওয়া সম্পর্কে জানা যাবে
 - গতকাল এর আবহাওয়া ও জানা যাবে
 - সার্চ করে যেখনো শহর এর আবহাওয়া জানে যাবে
-- বাংলাদেশের কিছু জেলা এর আবহাওয়া
+- বাংলাদেশের সব জেলা এর আবহাওয়া এক সাথে
 
 
 <br>

@@ -10,19 +10,6 @@ class SavedCity extends StatefulWidget {
 }
 
 class _SavedCityState extends State<SavedCity> {
-  // List allZillaWeather = [];
-
-  // makeWeatherListZilla() {
-  //   futureZilla = Provider.of<WeatherCondition>(context, listen: false)
-  //       .makeWeatherListZilla();
-  // }
-
-  @override
-  void initState() {
-    super.initState();
-    weatherCondition.makeWeatherListZilla();
-  }
-
   final WeatherConditionController weatherCondition = Get.find();
 
   @override
@@ -34,7 +21,7 @@ class _SavedCityState extends State<SavedCity> {
         child: Column(
           children: [
             Text(
-              'বাংলাদেশের কিছু জেলা এর বর্তমান আবহাওয়া',
+              'বাংলাদেশের সব জেলা এর বর্তমান আবহাওয়া',
               style: kHeaderTitle.copyWith(fontSize: 18),
             ),
             Container(
@@ -44,21 +31,42 @@ class _SavedCityState extends State<SavedCity> {
               ),
             ),
             GetX<WeatherConditionController>(builder: (controller) {
+              print(controller.progressIndicator.value);
               if (controller.isZillaLoading.value == false) {
                 List allZillaWeather = controller.allZillaWeather;
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: allZillaWeather.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      // You can modify the card at COMPONENT FOLDER
-                      return ZillaCard(
-                        cityName: allZillaWeather[index].cityName,
-                        cityWeather: allZillaWeather[index].temperature,
-                        iconName: allZillaWeather[index].iconName,
-                        cityWeatherDesc: allZillaWeather[index].weatherDesc,
-                      );
-                    },
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.81,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: allZillaWeather.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            // You can modify the card at COMPONENT FOLDER
+                            return ZillaCard(
+                              cityName: allZillaWeather[index].cityName,
+                              cityWeather: allZillaWeather[index].temperature,
+                              iconName: allZillaWeather[index].iconName,
+                              cityWeatherDesc:
+                                  allZillaWeather[index].weatherDesc,
+                            );
+                          },
+                        ),
+                      ),
+                      controller.allZillaLoaded.value == false
+                          ? Container(
+                              margin: EdgeInsets.only(top: 10),
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: LinearProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.blueAccent),
+                                backgroundColor: Colors.white,
+                                value: controller.progressIndicator.value,
+                              ),
+                            )
+                          : SizedBox(),
+                    ],
                   ),
                 );
               } else if (controller.isZillaLoading.value == true) {

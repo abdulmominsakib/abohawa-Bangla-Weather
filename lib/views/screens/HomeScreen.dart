@@ -25,11 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final PageController tempCont = PageController(initialPage: 1);
 
-  // For Future Builder to know when this is finished
-  getWeatherData() {
-    return weatherCondition.makeWeatherList();
-  }
-
   // For Checking Connection
   isDataAvailable() async {
     internetAvailable = await DataConnectionChecker().hasConnection;
@@ -43,9 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // For adding the week at start of the app
-    dateController.addBanglaWeek();
-    weatherCondition.makeWeatherList();
+    currentPage.value = 1;
   }
 
   @override

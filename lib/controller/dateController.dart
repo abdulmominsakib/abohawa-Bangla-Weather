@@ -4,6 +4,11 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class DateController extends GetxController {
+  void onInit() {
+    super.onInit();
+    addBanglaWeek();
+  }
+
   // This will generate a WEEK in Bangla
   // You can change the language here for the date
   String bengali = 'bn_BN';

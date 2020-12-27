@@ -1,5 +1,5 @@
 class WhichIconToShow {
-  static String iconName({String weatherDesc}) {
+  static String iconName(String weatherDesc) {
     String iconName = 'na';
 
     // Function Goes Here

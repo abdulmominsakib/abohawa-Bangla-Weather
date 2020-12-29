@@ -103,7 +103,7 @@ void handleError(int responseCode) {
       title: 'Wrong City Name',
       snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.redAccent,
-      message: 'Wrong city name, ZIP-code or city ID or Bad API Request',
+      message: 'Wrong city name, ZIP-code or city ID',
       duration: Duration(seconds: 5),
       icon: Icon(Icons.location_city),
       isDismissible: true,

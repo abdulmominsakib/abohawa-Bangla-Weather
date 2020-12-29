@@ -74,7 +74,7 @@ class _BanglaWeatherState extends State<BanglaWeather> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.search_rounded), label: 'সার্চ'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.location_city_rounded), label: 'জেলা'),
+                  icon: Icon(Icons.location_city_rounded), label: 'সব জেলা'),
             ],
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,

@@ -15,7 +15,7 @@ class SearchCity extends GetxController {
   searchWeather(String typedCityName) async {
     Map<String, dynamic> cityWeather =
         await GetWeatherData.getWeatherByCityName(typedCityName);
-
+    print(cityWeather['cod']);
     if (cityWeather['cod'] == 200) {
       progressIndicator.value = true;
       String cityName = cityWeather['name'];
@@ -24,14 +24,20 @@ class SearchCity extends GetxController {
       double windSpeed = cityWeather['wind']['speed'] * 3.6.round();
 
       // This generates bangla name if available in GEOCODING
-      List<Location> locations = await locationFromAddress(typedCityName);
-      double lat = locations[0].latitude;
-      double lon = locations[0].longitude;
+      String banglaLocation = '';
+      try {
+        List<Location> locations = await locationFromAddress(typedCityName);
 
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(lat, lon, localeIdentifier: 'bn_BN');
-      String banglaLocation = placemarks[0].locality;
-      // print(banglaLocation);
+        double lat = locations[0].latitude;
+        double lon = locations[0].longitude;
+
+        List<Placemark> placemarks =
+            await placemarkFromCoordinates(lat, lon, localeIdentifier: 'bn_BN');
+        banglaLocation = placemarks[0].locality;
+        // print(banglaLocation);
+      } catch (e) {
+        print(e);
+      }
 
       String banglaWeatherDescription =
           BanglaWeatherDescription.getBanglaDesc(weatherDescription);
@@ -61,7 +67,6 @@ class SearchCity extends GetxController {
       // print(icon);s
 
     } else {
-      print(cityWeather['cod']);
       progressIndicator.value = false;
       noCityAvailableCode.value = true;
     }

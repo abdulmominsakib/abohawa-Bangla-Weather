@@ -181,7 +181,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.white.withOpacity(0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
                   )
@@ -197,97 +197,98 @@ class _SearchResultCardState extends State<SearchResultCard> {
             return NoCityAvailable();
           } else if (searchCity.progressIndicator.value == false) {
             // If there is city available we will show this
-            return Container(
-              padding: EdgeInsets.all(20),
-              height: 300,
-              width: 500,
-              decoration: BoxDecoration(
-                color: Colors.lightBlue,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  )
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.city.cityName,
-                    style: kHeaderTitle.copyWith(fontSize: 35),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    height: 2,
-                    color: Colors.white10,
-                    width: double.maxFinite,
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
+            return SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                width: 500,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.greenAccent.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    )
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.city.cityName,
+                      style: kHeaderTitle.copyWith(fontSize: 35),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 20, right: 20),
+                      height: 2,
+                      color: Colors.white10,
+                      width: double.maxFinite,
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/weather-icons/${widget.city.iconName}.png',
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.contain,
+                                color: Colors.white,
+                              ),
+                            ]),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              'assets/weather-icons/${widget.city.iconName}.png',
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.contain,
-                              color: Colors.white,
+                            Text(
+                              'এখন তাপমাত্রাঃ',
+                              style: kBanglaFont.copyWith(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
                             ),
-                          ]),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'এখন তাপমাত্রাঃ',
-                            style: kBanglaFont.copyWith(
-                              fontSize: 15,
-                              color: Colors.white,
+                            Text(
+                              '${widget.city.temperature}°',
+                              style: kHeaderTitle,
                             ),
-                          ),
-                          Text(
-                            '${widget.city.temperature}°',
-                            style: kHeaderTitle,
-                          ),
-                          Text(
-                            '${widget.city.weatherDesc},',
-                            style: kBanglaFont.copyWith(
-                              fontSize: 18,
-                              color: Colors.white,
+                            Text(
+                              '${widget.city.weatherDesc},',
+                              style: kBanglaFont.copyWith(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'বাতাসের গতিঃ',
-                            style: kBanglaFont.copyWith(
-                              fontSize: 15,
-                              color: Colors.white,
+                            SizedBox(
+                              height: 10,
                             ),
-                          ),
-                          Text(
-                            '${widget.city.windSpeed} কি.মি.',
-                            style: kBanglaFont.copyWith(
-                              fontSize: 15,
-                              color: Colors.white,
+                            Text(
+                              'বাতাসের গতিঃ',
+                              style: kBanglaFont.copyWith(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                            Text(
+                              '${widget.city.windSpeed} কি.মি.',
+                              style: kBanglaFont.copyWith(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -311,7 +312,7 @@ class NoCityAvailable extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.red.withOpacity(0.3),
             blurRadius: 10,
             spreadRadius: 2,
           )

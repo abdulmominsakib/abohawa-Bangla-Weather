@@ -1,11 +1,12 @@
+import 'package:abohawa/controller/allZillaScreenController.dart';
 import 'package:abohawa/controller/dateController.dart';
+import 'package:abohawa/controller/services/connection/internetConnectionChecker.dart';
 import 'package:abohawa/controller/weatherConditionController.dart';
 import 'package:abohawa/views/ui-components/dateSlider.dart';
 import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:abohawa/modal/Date.dart';
 import 'package:abohawa/views/ui-components/styling.dart';
 import 'package:abohawa/modal/Weather.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,15 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final PageController tempCont = PageController(initialPage: 1);
 
-  // For Checking Connection
-  isDataAvailable() async {
-    internetAvailable = await DataConnectionChecker().hasConnection;
-  }
-
-  bool internetAvailable = true;
-
   final DateController dateController = Get.find();
   final WeatherConditionController weatherCondition = Get.find();
+  final AllZilla allZilla = Get.put(AllZilla());
 
   @override
   void initState() {
@@ -48,19 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    InternetChecker().checkData();
     var height = MediaQuery.of(context).size.height;
-    isDataAvailable();
-    print('build done');
     // List of Date
     List<Date> dateGenerator = dateController.generatedWeek;
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.only(top: height / 20, bottom: height / 20),
+        margin: EdgeInsets.only(top: height / 25, bottom: height / 20),
         height: MediaQuery.of(context).size.height,
         child: RefreshIndicator(
           onRefresh: () {
-            setState(() {});
-            return isDataAvailable();
+            weatherCondition.internetHere();
+            return weatherCondition.makeWeatherList();
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -74,15 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Center(
-                          child: internetAvailable
-                              ? CircularProgressIndicator(
-                                  backgroundColor: Colors.white,
-                                )
-                              : SizedBox(),
+                          child:
+                              weatherCondition.isInternetAvailable.value == true
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Colors.white,
+                                    )
+                                  : SizedBox(),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          internetAvailable
+                          weatherCondition.isInternetAvailable.value == true
                               ? 'একটু অপেক্ষা করুন'
                               : 'ইন্টারনেট কানেকশন নেই!',
                           style: kHeaderTitle.copyWith(
@@ -280,6 +275,7 @@ class TemperatureData extends StatelessWidget {
                 ),
                 // This will act as a divider
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       margin: EdgeInsets.only(right: 10, left: 5),

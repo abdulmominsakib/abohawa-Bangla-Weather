@@ -1,4 +1,6 @@
 PODS:
+  - "app_settings (3.0.0+1)":
+    - Flutter
   - bangla_utilities (0.0.1):
     - Flutter
   - Flutter (1.0.0)
@@ -10,6 +12,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - bangla_utilities (from `.symlinks/plugins/bangla_utilities/ios`)
   - Flutter (from `Flutter`)
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
@@ -17,6 +20,8 @@ DEPENDENCIES:
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 EXTERNAL SOURCES:
+  app_settings:
+    :path: ".symlinks/plugins/app_settings/ios"
   bangla_utilities:
     :path: ".symlinks/plugins/bangla_utilities/ios"
   Flutter:
@@ -29,6 +34,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
+  app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   bangla_utilities: 2cb0725075dacf7e1261e570807afbd5eb4e5b9c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58

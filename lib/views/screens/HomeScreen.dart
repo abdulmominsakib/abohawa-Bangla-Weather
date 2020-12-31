@@ -3,6 +3,7 @@ import 'package:abohawa/controller/dateController.dart';
 import 'package:abohawa/controller/services/connection/internetConnectionChecker.dart';
 import 'package:abohawa/controller/weatherConditionController.dart';
 import 'package:abohawa/views/ui-components/dateSlider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bangla_utilities/bangla_utilities.dart';
 import 'package:abohawa/modal/Date.dart';
 import 'package:abohawa/views/ui-components/styling.dart';
@@ -144,23 +145,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Column(
                           children: [
-                            Row(
+                            Container(
+                              height: height / 15,
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: Colors.white,
-                                    size: height / 25,
+                                  Expanded(
+                                    flex: 3,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Icon(
+                                        Icons.location_on,
+                                        color: Colors.white,
+                                        size: height / 25,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text(
-                                    '$userLocation',
-                                    style: kHeaderTitle.copyWith(
-                                        fontSize: height / 22),
+                                  Expanded(
+                                    flex: 5,
+                                    child: AutoSizeText(
+                                      '$userLocation',
+                                      style: kHeaderTitle.copyWith(
+                                        fontSize: height / 22,
+                                      ),
+                                      minFontSize: 14,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ]),
+                                ],
+                              ),
+                            ),
 
                             SizedBox(height: 10),
                             Text(

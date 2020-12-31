@@ -14,6 +14,8 @@ class BanglaWeather extends StatefulWidget {
 }
 
 class _BanglaWeatherState extends State<BanglaWeather> {
+  /* -------->
+  This is for bottom navigation */
   int _selectedIndex = 0;
   Widget defaultHomeScreen = HomeScreen();
 
@@ -32,16 +34,12 @@ class _BanglaWeatherState extends State<BanglaWeather> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   /* <---------
    So we will create two controller one for the Date and other for the weather.
    
   When The app will run, first the Date Generator will generate 
-  a week in Bangla to show the date in the UI and it will contain 9 DATE ITEMS, Then weather condition makeWeatherList() will generate 9 WeatherCondition Items.
+  a week in Bangla to show the date in the UI and it will contain 9 DATE ITEMS,
+  Then weather condition makeWeatherList() will generate 9 WeatherCondition Items.
   --------------> */
 
   final DateController dateController = Get.put(DateController());

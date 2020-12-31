@@ -1,8 +1,7 @@
-# <img src="docs/Abohawa-Bangla-Weather-Logo.png" width="30"> আবহাওয়া - Weather App (Bengali)
-
-এটি একটি বাংলা আবহাওয়া এর এ্যাপ। আপনি চাইলে এই এ্যাপ ব্যবহার করতে পারবেন। Flutter ইউজ করে এই এ্যাপ বানানো হয়েছে। API ইউজ করা হয়েছে OPEN WEATHER ফ্রি এপিআই।
-
 ### <img src="docs/hero-image.png">  
+<br>
+এটি একটি বাংলা আবহাওয়া এর এ্যাপ। আপনি চাইলে এই এ্যাপ ব্যবহার করতে পারবেন। Flutter ইউজ করে এই এ্যাপ বানানো হয়েছে। API ইউজ করা হয়েছে OPEN WEATHER ফ্রি এপিআই।
+<br>
 <br>
 <img src='docs/app-demo.gif' width='300'>
 

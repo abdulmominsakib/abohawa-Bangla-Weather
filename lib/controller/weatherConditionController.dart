@@ -52,7 +52,7 @@ class WeatherConditionController extends GetxController {
           return null;
         }
       }
-
+      // This will ask for permission if user has not give location permission
       _permissionGranted = await location.hasPermission();
       if (_permissionGranted == locate.PermissionStatus.denied) {
         _permissionGranted = await location.requestPermission();
@@ -63,8 +63,8 @@ class WeatherConditionController extends GetxController {
 
       _locationData = await location.getLocation();
 
-      print(_locationData.latitude);
-      print(_locationData.longitude);
+      print('Your Latitude: ${_locationData.latitude}');
+      print('Your Longtitude: ${_locationData.longitude}');
       // For Network Call
       String lat = _locationData.latitude.toString();
       String lon = _locationData.longitude.toString();

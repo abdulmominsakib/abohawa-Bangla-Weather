@@ -6,25 +6,27 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=3.2.6 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
-  get: ^3.23.1
-  http: ^0.12.2
-  bangla_utilities: ^0.2.1
-  location: ^3.1.0
-  geocoding: ^1.0.5
-  data_connection_checker: ^0.3.4
-  intl: ^0.16.1
-  app_settings: 4.0.4
-  auto_size_text: ^2.1.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  location: ^7.0.1
+  geocoding: ^3.0.0
+  internet_connection_checker_plus: ^2.5.2
+  intl: ^0.19.0
+  app_settings: ^5.1.1
+  auto_size_text: ^3.0.0
   cupertino_icons: ^1.0.0
+  flutter_riverpod: ^2.5.3
+  dio: ^5.7.0
+  fluttertoast: ^8.2.8
+  connectivity_plus: ^6.1.0
+  flutter_hooks: ^0.20.5
+  hooks_riverpod: ^2.5.4
+  shimmer: ^3.0.0
+  dio_cache_interceptor: ^3.5.0
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +37,7 @@ flutter:
 
   assets:
     - assets/weather-icons/
+    - assets/bangladesh_zilla_list.json
   fonts:
     - family: Solaiman
       fonts:

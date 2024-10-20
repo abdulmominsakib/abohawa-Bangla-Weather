@@ -1,15 +1,15 @@
-import '../../models/city_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../utils/bd_weather_utils.dart';
+import '../../../models/city_model.dart';
+import '../../../utils/bd_weather_utils.dart';
 
 class ZillaCard extends StatelessWidget {
   const ZillaCard({
-    Key? key,
+    super.key,
     required this.city,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   final City? city;
   final bool isLoading;

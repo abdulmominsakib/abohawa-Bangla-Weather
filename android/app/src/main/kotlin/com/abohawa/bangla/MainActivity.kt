@@ -1,4 +1,4 @@
-package com.example.abohawa
+package com.abohawa.bangla
 
 import io.flutter.embedding.android.FlutterActivity
 

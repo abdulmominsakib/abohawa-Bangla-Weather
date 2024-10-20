@@ -1,10 +1,10 @@
-import 'package:abohawa/config/app_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
-import '../utils/bd_weather_utils.dart';
+
+import '../data/weather_service.dart';
 import '../models/city_model.dart';
+import '../utils/bd_weather_utils.dart';
 
 class SearchState {
   final City? searchedCity;
@@ -31,43 +31,40 @@ class SearchState {
 }
 
 class SearchNotifier extends StateNotifier<SearchState> {
-  SearchNotifier() : super(SearchState());
+  final WeatherService _weatherService;
+
+  SearchNotifier(this._weatherService) : super(SearchState());
 
   Future<void> searchWeather(String typedCityName) async {
     state = state.copyWith(isLoading: true, noCityAvailable: false);
 
     try {
-      final response = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?q=$typedCityName&appid=${AppConfig.apiKey}&units=metric'));
+      final cityWeather =
+          await _weatherService.getWeatherByCityName(typedCityName);
 
-      if (response.statusCode == 200) {
-        final cityWeather = json.decode(response.body);
-        final String cityName = cityWeather['name'];
-        final String weatherDescription =
-            cityWeather['weather'][0]['description'];
-        final int temperature = cityWeather['main']['temp'].toInt();
-        final double windSpeed = cityWeather['wind']['speed'] * 3.6;
+      final String cityName = cityWeather['name'];
+      final String weatherDescription =
+          cityWeather['weather'][0]['description'];
+      final int temperature = cityWeather['main']['temp'].toInt();
+      final double windSpeed = cityWeather['wind']['speed'] * 3.6;
 
-        String banglaLocation = await _getBanglaLocation(typedCityName);
+      String banglaLocation = await _getBanglaLocation(typedCityName);
 
-        final searchedCity = City(
-          cityName: banglaLocation.isNotEmpty ? banglaLocation : cityName,
-          temperature: temperature.toString(),
-          windSpeed: windSpeed.toStringAsFixed(1),
-          weatherDesc: BDWeatherUtils.getBanglaDesc(weatherDescription),
-          iconName: BDWeatherUtils.iconName(weatherDescription),
-        );
+      final searchedCity = City(
+        cityName: banglaLocation.isNotEmpty ? banglaLocation : cityName,
+        temperature: temperature.toString(),
+        windSpeed: windSpeed.toStringAsFixed(1),
+        weatherDesc: BDWeatherUtils.getBanglaDesc(weatherDescription),
+        iconName: BDWeatherUtils.iconName(weatherDescription),
+      );
 
-        state = state.copyWith(
-          searchedCity: searchedCity,
-          isLoading: false,
-          noCityAvailable: false,
-        );
-      } else {
-        state = state.copyWith(isLoading: false, noCityAvailable: true);
-      }
+      state = state.copyWith(
+        searchedCity: searchedCity,
+        isLoading: false,
+        noCityAvailable: false,
+      );
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       state = state.copyWith(isLoading: false, noCityAvailable: true);
     }
   }
@@ -78,11 +75,10 @@ class SearchNotifier extends StateNotifier<SearchState> {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         locations[0].latitude,
         locations[0].longitude,
-        // localeIdentifier: 'bn_BN',
       );
       return placemarks[0].locality ?? '';
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return '';
     }
   }
@@ -90,5 +86,6 @@ class SearchNotifier extends StateNotifier<SearchState> {
 
 final searchProvider =
     StateNotifierProvider<SearchNotifier, SearchState>((ref) {
-  return SearchNotifier();
+  final weatherService = ref.read(weatherServiceProvider);
+  return SearchNotifier(weatherService);
 });

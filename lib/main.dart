@@ -1,6 +1,7 @@
-import 'views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'views/base/base_widget.dart';
 
 void main() {
   runApp(

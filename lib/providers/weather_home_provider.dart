@@ -1,24 +1,21 @@
+import 'connection_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as locate;
 import '../utils/bd_weather_utils.dart';
 import '../models/weather_model.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-
 import '../data/weather_service.dart';
 
 class WeatherState {
   final WeatherCondition? currentWeather;
   final bool isLoading;
-  final bool isInternetAvailable;
   final String? error;
   final List<WeatherCondition>? forecast;
 
   WeatherState({
     this.currentWeather,
     this.isLoading = true,
-    this.isInternetAvailable = true,
     this.error,
     this.forecast,
   });
@@ -26,14 +23,12 @@ class WeatherState {
   WeatherState copyWith({
     WeatherCondition? currentWeather,
     bool? isLoading,
-    bool? isInternetAvailable,
     String? error,
     List<WeatherCondition>? forecast,
   }) {
     return WeatherState(
       currentWeather: currentWeather ?? this.currentWeather,
       isLoading: isLoading ?? this.isLoading,
-      isInternetAvailable: isInternetAvailable ?? this.isInternetAvailable,
       error: error ?? this.error,
       forecast: forecast ?? this.forecast,
     );
@@ -42,25 +37,33 @@ class WeatherState {
 
 class HomeWeatherNotifier extends StateNotifier<WeatherState> {
   HomeWeatherNotifier(this.ref) : super(WeatherState()) {
-    checkInternetAndLoadWeather();
+    _init();
   }
 
   final Ref ref;
 
-  Future<void> checkInternetAndLoadWeather() async {
-    await checkInternet();
-    if (state.isInternetAvailable) {
-      await fetchCurrentWeather();
+  void _init() {
+    ref.listen(connectionStatusProvider, (_, next) {
+      if (next == AppConnectionStatus.online) {
+        fetchCurrentWeather();
+      }
+    });
+
+    // Initial fetch if online
+    if (ref.read(connectionStatusProvider) == AppConnectionStatus.online) {
+      fetchCurrentWeather();
     }
   }
 
-  Future<void> checkInternet() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    bool hasInternet = connectivityResult != ConnectivityResult.none;
-    state = state.copyWith(isInternetAvailable: hasInternet);
-  }
-
   Future<void> fetchCurrentWeather() async {
+    if (ref.read(connectionStatusProvider) == AppConnectionStatus.offline) {
+      state = state.copyWith(
+        error: "No internet connection. Please check your network settings.",
+        isLoading: false,
+      );
+      return;
+    }
+
     state = state.copyWith(isLoading: true, error: null);
 
     try {

@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:abohawa/config/app_config.dart';
+import 'package:abohawa/secrets.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +19,7 @@ final dioProvider = Provider<Dio>((ref) {
 
   final dio = Dio(BaseOptions(
     baseUrl: 'https://api.openweathermap.org/data/2.5',
-    queryParameters: {'appid': AppConfig.apiKey, 'units': 'metric'},
+    queryParameters: {'appid': Secrets.apiKey, 'units': 'metric'},
     validateStatus: (int? status) {
       return status != null;
       // return status != null && status >= 200 && status < 300;

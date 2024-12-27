@@ -1,3 +1,4 @@
+import 'package:abohawa/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 import '../../../models/city_model.dart';
 import '../../../constants/styling.dart';
@@ -17,7 +18,7 @@ class SearchResultCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.greenAccent.withOpacity(0.3),
+            color: Colors.greenAccent.withOpacityValue(0.3),
             blurRadius: 10,
             spreadRadius: 2,
           )

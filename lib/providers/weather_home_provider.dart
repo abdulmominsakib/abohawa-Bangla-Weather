@@ -1,11 +1,12 @@
-import 'connection_provider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:location/location.dart' as locate;
-import '../utils/bd_weather_utils.dart';
-import '../models/weather_model.dart';
+
 import '../data/weather_service.dart';
+import '../models/weather_model.dart';
+import '../utils/bd_weather_utils.dart';
+import 'connection_provider.dart';
+import 'location_permission_provider.dart';
 
 class WeatherState {
   final WeatherCondition? currentWeather;
@@ -36,11 +37,12 @@ class WeatherState {
 }
 
 class HomeWeatherNotifier extends StateNotifier<WeatherState> {
-  HomeWeatherNotifier(this.ref) : super(WeatherState()) {
+  HomeWeatherNotifier(this.ref, this.context) : super(WeatherState()) {
     _init();
   }
 
   final Ref ref;
+  final BuildContext context;
 
   void _init() {
     ref.listen(connectionStatusProvider, (_, next) {
@@ -49,7 +51,6 @@ class HomeWeatherNotifier extends StateNotifier<WeatherState> {
       }
     });
 
-    // Initial fetch if online
     if (ref.read(connectionStatusProvider) == AppConnectionStatus.online) {
       fetchCurrentWeather();
     }
@@ -67,59 +68,121 @@ class HomeWeatherNotifier extends StateNotifier<WeatherState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      await setLocaleIdentifier('bn_BD');
-      locate.Location location = locate.Location();
-      await location.requestPermission();
-      locate.LocationData locationData = await location.getLocation();
+      final permissionNotifier =
+          ref.read(locationPermissionProvider(context).notifier);
 
-      String lat = locationData.latitude.toString();
-      String lon = locationData.longitude.toString();
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        locationData.latitude!,
-        locationData.longitude!,
-      );
-      debugPrint("Got lat: $lat, lon: $lon");
-
-      String banglaLocation =
-          placemarks[0].locality ?? placemarks[0].name ?? '';
-
-      debugPrint('Got bangla location: $banglaLocation ');
-
-      WeatherCondition currentWeather =
-          await _getCurrentWeather(lat, lon, banglaLocation);
-
-      debugPrint("Got current weather $currentWeather");
-      final weatherService = ref.read(weatherServiceProvider);
-
-      final forecastData = await weatherService.getWeatherForecast(lat, lon);
-      final List<WeatherCondition> forecast = [];
-
-      for (var i = 1; i < 8; i++) {
-        final map = forecastData['list'][i];
-        forecast.add(
-          WeatherCondition(
-            location: banglaLocation,
-            descriptionWeather: map['weather'][0]['description'] as String,
-            iconWeather: map['weather'][0]['icon'] as String,
-            windSpeed: (map['wind']['speed'] as num).toDouble(),
-            temperature: (map['main']['temp'] as num).toDouble(),
-            feelsLike: (map['main']['feels_like'] as num).toDouble(),
-            humidity: map['main']['humidity'] as int,
-            pressure: map['main']['pressure'] as int,
-            date: DateTime.fromMillisecondsSinceEpoch(map['dt'] * 1000),
-          ),
+      // First check and request permission
+      final hasPermission =
+          await permissionNotifier.checkAndRequestPermission();
+      if (!hasPermission) {
+        state = state.copyWith(
+          error: permissionNotifier.getErrorMessage(),
+          isLoading: false,
         );
+        return;
       }
 
+      // Get location data
+      final locationData = await permissionNotifier.getCurrentLocation();
+      if (locationData == null) {
+        state = state.copyWith(
+          error: "Unable to get your location. Please try again.",
+          isLoading: false,
+        );
+        return;
+      }
+
+      // Get coordinates and location name
+      final lat = locationData.latitude;
+      final lon = locationData.longitude;
+
+      if (lat == null || lon == null) {
+        state = state.copyWith(
+          error: "Invalid location data received. Please try again.",
+          isLoading: false,
+        );
+        return;
+      }
+
+      // Get location name
+      List<Placemark> placemarks;
+      try {
+        placemarks = await placemarkFromCoordinates(lat, lon);
+      } catch (e) {
+        debugPrint('Error getting placemark: $e');
+        state = state.copyWith(
+          error: "Unable to get your location name. Please try again.",
+          isLoading: false,
+        );
+        return;
+      }
+
+      final banglaLocation = placemarks.isNotEmpty
+          ? (placemarks[0].locality ?? placemarks[0].name ?? '')
+          : '';
+
+      // Get current weather
+      WeatherCondition? currentWeather;
+      try {
+        currentWeather = await _getCurrentWeather(
+          lat.toString(),
+          lon.toString(),
+          banglaLocation,
+        );
+      } catch (e) {
+        debugPrint('Error getting current weather: $e');
+        state = state.copyWith(
+          error: "Unable to fetch current weather. Please try again.",
+          isLoading: false,
+        );
+        return;
+      }
+
+      // Get forecast
+      final List<WeatherCondition> forecast = [];
+      try {
+        final weatherService = ref.read(weatherServiceProvider);
+        final forecastData = await weatherService.getWeatherForecast(
+          lat.toString(),
+          lon.toString(),
+        );
+
+        for (var i = 1; i < 8; i++) {
+          final map = forecastData['list'][i];
+          forecast.add(
+            WeatherCondition(
+              location: banglaLocation,
+              descriptionWeather: map['weather'][0]['description'] as String,
+              iconWeather: map['weather'][0]['icon'] as String,
+              windSpeed: (map['wind']['speed'] as num).toDouble(),
+              temperature: (map['main']['temp'] as num).toDouble(),
+              feelsLike: (map['main']['feels_like'] as num).toDouble(),
+              humidity: map['main']['humidity'] as int,
+              pressure: map['main']['pressure'] as int,
+              date: DateTime.fromMillisecondsSinceEpoch(map['dt'] * 1000),
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('Error getting forecast: $e');
+        state = state.copyWith(
+          error: "Unable to fetch weather forecast. Please try again.",
+          isLoading: false,
+        );
+        return;
+      }
+
+      // Update state with all data
       state = state.copyWith(
         currentWeather: currentWeather,
         forecast: forecast,
         isLoading: false,
       );
     } catch (e) {
+      debugPrint('Error in fetchCurrentWeather: $e');
       state = state.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: "An unexpected error occurred. Please try again.",
       );
     }
   }
@@ -155,7 +218,7 @@ class HomeWeatherNotifier extends StateNotifier<WeatherState> {
   }
 }
 
-final weatherHomeProvider =
-    StateNotifierProvider<HomeWeatherNotifier, WeatherState>((ref) {
-  return HomeWeatherNotifier(ref);
+final weatherHomeProvider = StateNotifierProvider.family<HomeWeatherNotifier,
+    WeatherState, BuildContext>((ref, context) {
+  return HomeWeatherNotifier(ref, context);
 });

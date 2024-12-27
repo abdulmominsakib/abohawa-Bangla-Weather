@@ -16,7 +16,7 @@ class WeatherDescription extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final banglaDesc = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .getBanglaWeatherDesc(weather.descriptionWeather);
     return Text(banglaDesc, style: kBanglaFont);
   }

@@ -16,13 +16,13 @@ class AdditionalInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final banglaWindSpeed = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .convertToBanglaNumber(weather.windSpeed.round());
     final banglaHumidity = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .convertToBanglaNumber(weather.humidity);
     final banglaPressure = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .convertToBanglaNumber(weather.pressure);
     final height = MediaQuery.sizeOf(context).height;
 

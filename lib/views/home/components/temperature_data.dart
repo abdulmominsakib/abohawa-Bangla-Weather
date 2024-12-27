@@ -18,10 +18,10 @@ class TemperatureData extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final banglaTemperature = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .convertToBanglaNumber(weather.temperature.round());
     final banglaFeelsLike = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .convertToBanglaNumber(weather.feelsLike.round());
     final height = MediaQuery.sizeOf(context).height;
 

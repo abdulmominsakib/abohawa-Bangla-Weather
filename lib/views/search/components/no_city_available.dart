@@ -1,3 +1,4 @@
+import 'package:abohawa/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/styling.dart';
@@ -16,7 +17,7 @@ class NoCityAvailable extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.red.withOpacity(0.3),
+            color: Colors.red.withOpacityValue(0.3),
             blurRadius: 10,
             spreadRadius: 2,
           )

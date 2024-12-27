@@ -15,12 +15,12 @@ class WeatherIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final icon = ref
-        .read(weatherHomeProvider.notifier)
+        .read(weatherHomeProvider(context).notifier)
         .whichIconToShow(weather.descriptionWeather);
     final height = MediaQuery.sizeOf(context).height;
 
     return Container(
-      height: height / 4,
+      height: height / 4.5,
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Image.asset(
         'assets/weather-icons/$icon.png',
